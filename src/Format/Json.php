@@ -1,6 +1,5 @@
 <?php  namespace Filebase\Format;
 
-
 class Json implements FormatInterface
 {
     /**
@@ -17,7 +16,7 @@ class Json implements FormatInterface
 
     /**
      * @param array $data
-     * @param bool $pretty
+     * @param bool  $pretty
      * @return string
      * @throws FormatException
      */
@@ -68,6 +67,4 @@ class Json implements FormatInterface
 
 
     //--------------------------------------------------------------------
-
-
 }

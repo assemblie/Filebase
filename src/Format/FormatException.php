@@ -15,4 +15,3 @@ class FormatException extends \Exception
         return $this->inputData;
     }
 }
-

@@ -1,20 +1,16 @@
 <?php  namespace Filebase;
 
-
-class badformat {
-
-}
-
-
 class DatabaseTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testVersion()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $this->assertRegExp('/[0-9]+\.[0-9]+\.[0-9]+/', $db->version());
     }
@@ -24,16 +20,17 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        if (!is_dir(__DIR__.'/databases/cantedit'))
-        {
+        if (!is_dir(__DIR__.'/databases/cantedit')) {
             mkdir(__DIR__.'/databases/cantedit');
         }
 
         chmod(__DIR__.'/databases/cantedit', 0444);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases/cantedit'
-        ]);
+            ]
+        );
 
         chmod(__DIR__.'/databases/cantedit', 0777);
         rmdir(__DIR__.'/databases/cantedit');
@@ -42,17 +39,18 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
     public function testNotWritableButReadonly()
     {
-        if (!is_dir(__DIR__.'/databases/cantedit'))
-        {
+        if (!is_dir(__DIR__.'/databases/cantedit')) {
             mkdir(__DIR__.'/databases/cantedit');
         }
 
         chmod(__DIR__.'/databases/cantedit', 0444);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases/cantedit',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $this->assertEquals(true, true);
 
@@ -66,17 +64,21 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
         $db->get('test1')->set(['key'=>'value'])->save();
 
-        $db2 = new \Filebase\Database([
+        $db2 = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $db2->get('test1')->delete();
     }
@@ -88,10 +90,12 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $db->flush(true);
     }
@@ -101,10 +105,12 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $db->truncate();
     }
@@ -115,10 +121,12 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'read_only' => true
-        ]);
+            ]
+        );
 
         $db->get('test1')->set(['key'=>'value'])->save();
     }
@@ -129,10 +137,12 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'format' => ''
-        ]);
+            ]
+        );
     }
 
 
@@ -140,18 +150,22 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
-            'format' => badformat::class
-        ]);
+            'format' => BadFormat::class
+            ]
+        );
     }
 
 
     public function testDatabaseFlushTrue()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -165,9 +179,11 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
     public function testDatabaseTruncate()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases/test_delete'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -185,9 +201,11 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -200,9 +218,11 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
     public function testDatabaseFindAllSimple()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -224,15 +244,17 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
     public function testDatabaseFindAllDataOnly()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
         $db->get('test')->set(['key'=>'value'])->save();
 
-        $documents = $db->findAll(true,true);
+        $documents = $db->findAll(true, true);
 
         // should only have 1 doc
         $this->assertEquals(1, count($documents));
@@ -240,5 +262,4 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
 
         $db->flush(true);
     }
-
 }

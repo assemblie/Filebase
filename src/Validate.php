@@ -1,20 +1,19 @@
 <?php  namespace Filebase;
 
-
 class Validate
 {
 
     /**
      * valid
      *
-     * @param object document $object
+     * @param  object document $object
      * @return bool ( true ) if no exception is fired
      */
     public static function valid(Document $object)
     {
         $document = $object->toArray();
 
-        self::validateLoop($document,$object,self::getValidateRules($object));
+        self::validateLoop($document, $object, self::getValidateRules($object));
 
         return true;
     }
@@ -24,11 +23,11 @@ class Validate
 
 
     /**
-    * getValidateRules
-    *
-    * @param \Filebase\Document
-    * @return database->config
-    */
+     * getValidateRules
+     *
+     * @param  \Filebase\Document
+     * @return database->config
+     */
     public static function getValidateRules(Document $object)
     {
         return $object->getDatabase()->getConfig()->validate;
@@ -39,26 +38,24 @@ class Validate
 
 
     /**
-    * validateLoop
-    *
-    * Loops over the document and finds invaild data
-    * Throws an exception if found, otherwise returns nothing
-    *
-    * @param array (of document data)
-    * @return vold
-    */
-    protected static function validateLoop($document,$object,$rules)
+     * validateLoop
+     *
+     * Loops over the document and finds invaild data
+     * Throws an exception if found, otherwise returns nothing
+     *
+     * @param  array (of document data)
+     * @return vold
+     */
+    protected static function validateLoop($document, $object, $rules)
     {
-        foreach($rules as $key => $rule)
-        {
-            if ( (!isset($rule['valid.type']) ) && isset($document[$key]))
-            {
-                self::validateLoop($document[$key],$object,$rules[$key]);
+        foreach ($rules as $key => $rule) {
+            if ((!isset($rule['valid.type']) ) && isset($document[$key])) {
+                self::validateLoop($document[$key], $object, $rules[$key]);
 
                 continue;
             }
 
-            self::validateRules($document,$key,$rules[$key],$object);
+            self::validateRules($document, $key, $rules[$key], $object);
         }
     }
 
@@ -67,37 +64,38 @@ class Validate
 
 
     /**
-    * validateRules
-    *
-    * Checks "valid.type"
-    * Checks "valid.requred"
-    *
-    * Throws exception error if matches are not met.
-    *
-    * @return \Filebase\Document Object
-    */
-    protected static function validateRules($document,$key,$rules,$object)
+     * validateRules
+     *
+     * Checks "valid.type"
+     * Checks "valid.requred"
+     *
+     * Throws exception error if matches are not met.
+     *
+     * @return \Filebase\Document Object
+     */
+    protected static function validateRules($document, $key, $rules, $object)
     {
         // checks variable type
-        if (isset($document[$key],$rules['valid.type']))
-        {
-            if (!in_array($rules['valid.type'],['string','str','int','integer','arr','array']))
-            {
+        if (isset($document[$key], $rules['valid.type'])) {
+            if (!in_array($rules['valid.type'], ['string','str','int','integer','arr','array'])) {
                 throw new \Exception('Validation Failed: Invaild Property Type "'.$rules['valid.type'].'"');
             }
 
-            if (!self::checkType($document[$key],$rules['valid.type']))
-            {
-                throw new \Exception('Validation Failed setting variable on '.$object->getId().' - ['.$key.'] does not match type "'.$rules['valid.type'].'"');
+            if (!self::checkType($document[$key], $rules['valid.type'])) {
+                throw new \Exception(
+                    'Validation Failed setting variable on ' . $object->getId()
+                    . ' - [' . $key . '] does not match type "' . $rules['valid.type'] . '"'
+                );
             }
         }
 
         // check if variable is required
-        if (isset($rules['valid.required']) && $rules['valid.required']===true)
-        {
-            if (!isset($document[$key]))
-            {
-                throw new \Exception('Validation Failed setting variable on '.$object->getId().' - ['.$key.'] is required');
+        if (isset($rules['valid.required']) && $rules['valid.required']===true) {
+            if (!isset($document[$key])) {
+                throw new \Exception(
+                    'Validation Failed setting variable on ' . $object->getId()
+                    . ' - ['.$key.'] is required'
+                );
             }
         }
 
@@ -109,20 +107,18 @@ class Validate
 
 
     /**
-    * checkType
-    *
-    * Checks type of variable and sees if it matches
-    *
-    * @return boolean (true or false)
-    */
+     * checkType
+     *
+     * Checks type of variable and sees if it matches
+     *
+     * @return boolean (true or false)
+     */
     protected static function checkType($variable, $type)
     {
-        switch($type)
-        {
+        switch ($type) {
             case 'string':
             case 'str':
-                if (is_string($variable))
-                {
+                if (is_string($variable)) {
                     return true;
                 }
 
@@ -130,8 +126,7 @@ class Validate
 
             case 'integer':
             case 'int':
-                if (is_integer($variable))
-                {
+                if (is_integer($variable)) {
                     return true;
                 }
 
@@ -139,8 +134,7 @@ class Validate
 
             case 'array':
             case 'arr':
-                if (is_array($variable))
-                {
+                if (is_array($variable)) {
                     return true;
                 }
 
@@ -155,6 +149,4 @@ class Validate
 
 
     //--------------------------------------------------------------------
-
-
 }

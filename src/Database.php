@@ -24,35 +24,32 @@ class Database
     //--------------------------------------------------------------------
 
     /**
-    * $config
-    *
-    * Stores all the configuration object settings
-    * \Filebase\Config
-    */
+     * $config
+     *
+     * Stores all the configuration object settings
+     * \Filebase\Config
+     */
     protected $config;
 
 
     /**
-    * __construct
-    *
-    */
+     * __construct
+     */
     public function __construct(array $config = [])
     {
         $this->config = new Config($config);
 
         // if we are set to read only, don't care to look at the directory.
-        if ($this->config->read_only === true) return false;
+        if ($this->config->read_only === true) {
+            return false;
+        }
 
         // Check directory and create it if it doesn't exist
-        if (!is_dir($this->config->dir))
-        {
-            if (!@mkdir($this->config->dir, 0777, true))
-            {
+        if (!is_dir($this->config->dir)) {
+            if (!@mkdir($this->config->dir, 0777, true)) {
                 throw new Exception(sprintf('`%s` doesn\'t exist and can\'t be created.', $this->config->dir));
             }
-        }
-        else if (!is_writable($this->config->dir))
-        {
+        } elseif (!is_writable($this->config->dir)) {
             throw new Exception(sprintf('`%s` is not writable.', $this->config->dir));
         }
     }
@@ -62,12 +59,12 @@ class Database
 
 
     /**
-    * version
-    *
-    * gets the Filebase version
-    *
-    * @return VERSION
-    */
+     * version
+     *
+     * gets the Filebase version
+     *
+     * @return VERSION
+     */
     public function version()
     {
         return self::VERSION;
@@ -78,16 +75,16 @@ class Database
 
 
     /**
-    * findAll()
-    *
-    * Finds all documents in database directory.
-    * Then returns you a list of those documents.
-    *
-    * @param bool $include_documents (include all document objects in array)
-    * @param bool $data_only (if true only return the documents data not the full object)
-    *
-    * @return array $items
-    */
+     * findAll()
+     *
+     * Finds all documents in database directory.
+     * Then returns you a list of those documents.
+     *
+     * @param bool $include_documents (include all document objects in array)
+     * @param bool $data_only         (if true only return the documents data not the full object)
+     *
+     * @return array $items
+     */
     public function findAll($include_documents = true, $data_only = false)
     {
         $format = $this->config->format;
@@ -96,21 +93,16 @@ class Database
         $file_location  = $this->config->dir.'/';
 
         $all_items = Filesystem::getAllFiles($file_location, $file_extension);
-        if ($include_documents==true)
-        {
+        if ($include_documents==true) {
             $items = [];
 
-            foreach($all_items as $a)
-        	{
-                if ($data_only === true)
-                {
+            foreach ($all_items as $a) {
+                if ($data_only === true) {
                     $items[] = $this->get($a)->getData();
-                }
-                else
-                {
+                } else {
                     $items[] = $this->get($a);
                 }
-        	}
+            }
 
             return $items;
         }
@@ -123,14 +115,14 @@ class Database
 
 
     /**
-    * get
-    *
-    * retrieves a single result (file)
-    *
-    * @param mixed $id
-    *
-    * @return $document \Filebase\Document object
-    */
+     * get
+     *
+     * retrieves a single result (file)
+     *
+     * @param mixed $id
+     *
+     * @return $document \Filebase\Document object
+     */
     public function get($id)
     {
         $content = $this->read($id);
@@ -138,12 +130,15 @@ class Database
         $document = new Document($this);
         $document->setId($id);
 
-        if ($content)
-        {
-            if (isset($content['__created_at'])) $document->setCreatedAt($content['__created_at']);
-            if (isset($content['__updated_at'])) $document->setUpdatedAt($content['__updated_at']);
+        if ($content) {
+            if (isset($content['__created_at'])) {
+                $document->setCreatedAt($content['__created_at']);
+            }
+            if (isset($content['__updated_at'])) {
+                $document->setUpdatedAt($content['__updated_at']);
+            }
 
-            $this->set($document,(isset($content['data']) ? $content['data'] : []));
+            $this->set($document, (isset($content['data']) ? $content['data'] : []));
         }
 
         return $document;
@@ -154,18 +149,21 @@ class Database
 
 
     /**
-    * has
-    *
-    * Check if a record already exists
-    *
-    * @param mixed $id
-    *
-    * @return bool true/false
-    */
+     * Check if a record already exists
+     *
+     * @param mixed $id
+     *
+     * @return bool true/false
+     */
     public function has($id)
     {
         $format = $this->config->format;
-        $record = Filesystem::read( $this->config->dir.'/'.Filesystem::validateName($id, $this->config->safe_filename).'.'.$format::getFileExtension() );
+
+        $record = Filesystem::read(
+            $this->config->dir . '/'
+            . Filesystem::validateName($id, $this->config->safe_filename)
+            . '.' . $format::getFileExtension()
+        );
 
         return $record ? true : false;
     }
@@ -175,20 +173,19 @@ class Database
 
 
     /**
-    * backup
-    *
-    * @param string $location (optional)
-    *
-    * @return $document \Filebase\Backup object
-    */
+     * backup
+     *
+     * @param string $location (optional)
+     *
+     * @return $document \Filebase\Backup object
+     */
     public function backup($location = '')
     {
-        if ($location)
-        {
-            return new Backup($location, $this);
+        if ($location) {
+            return new Backup($this, $location);
         }
 
-        return new Backup($this->config->backupLocation, $this);
+        return new Backup($this, $this->config->backupLocation);
     }
 
 
@@ -196,20 +193,20 @@ class Database
 
 
     /**
-    * set
-    *
-    * @param $document \Filebase\Document object
-    * @param mixed $data should be an array
-    *
-    * @return $document \Filebase\Document object
-    */
+     * set
+     *
+     * @param $document \Filebase\Document object
+     * @param mixed                              $data should be an array
+     *
+     * @return $document \Filebase\Document object
+     */
     public function set(Document $document, $data)
     {
-        if ($data)
-        {
-            foreach($data as $key => $value)
-            {
-                if (is_array($value)) $value = (array) $value;
+        if ($data) {
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $value = (array) $value;
+                }
                 $document->{$key} = $value;
             }
         }
@@ -222,11 +219,10 @@ class Database
 
 
     /**
-    * count
-    *
-    *
-    * @return int $total
-    */
+     * count
+     *
+     * @return int $total
+     */
     public function count()
     {
         return count($this->findAll(false));
@@ -237,55 +233,51 @@ class Database
 
 
     /**
-    * save
-    *
-    * @param $document \Filebase\Document object
-    * @param mixed $data should be an array, new data to replace all existing data within
-    *
-    * @return (bool) true or false if file was saved
-    */
+     * save
+     *
+     * @param $document \Filebase\Document object
+     * @param mixed                              $data should be an array, new data to replace all existing data within
+     *
+     * @return (bool) true or false if file was saved
+     */
     public function save(Document $document, $wdata = '')
     {
-        if ($this->config->read_only === true)
-        {
+        if ($this->config->read_only === true) {
             throw new Exception("This database is set to be read-only. No modifications can be made.");
         }
 
         $format         = $this->config->format;
         $id             = $document->getId();
         $file_extension = $format::getFileExtension();
-        $file_location  = $this->config->dir.'/'.Filesystem::validateName($id, $this->config->safe_filename).'.'.$file_extension;
+        $file_location  = $this->config->dir . '/'
+                            . Filesystem::validateName($id, $this->config->safe_filename)
+                            . '.' . $file_extension;
         $created        = $document->createdAt(false);
 
-        if (isset($wdata) && $wdata !== '')
-        {
-            $document = new Document( $this );
+        if (isset($wdata) && $wdata !== '') {
+            $document = new Document($this);
             $document->setId($id);
             $document->set($wdata);
             $document->setCreatedAt($created);
         }
 
-        if (!Filesystem::read($file_location) || $created==false)
-        {
+        if (!Filesystem::read($file_location) || $created==false) {
             $document->setCreatedAt(time());
         }
 
         $document->setUpdatedAt(time());
 
         try {
-            $data = $format::encode( $document->saveAs(), $this->config->pretty );
+            $data = $format::encode($document->saveAs(), $this->config->pretty);
         } catch (EncodingException $e) {
             // TODO: handle exception: log?, throw write exception?...
         }
 
-        if (Filesystem::write($file_location, $data))
-        {
+        if (Filesystem::write($file_location, $data)) {
             $this->flushCache();
 
             return $document;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -295,10 +287,8 @@ class Database
 
 
     /**
-    * query
-    *
-    *
-    */
+     * query
+     */
     public function query()
     {
         return new Query($this);
@@ -319,7 +309,7 @@ class Database
 
         $file = Filesystem::read(
             $this->config->dir . '/'
-            . Filesystem::validateName($name, $this->config->safe_filename) 
+            . Filesystem::validateName($name, $this->config->safe_filename)
             . '.' . $format::getFileExtension()
         );
 
@@ -339,21 +329,26 @@ class Database
 
 
     /**
-    * delete
-    *
-    * @param $document \Filebase\Document object
-    * @return (bool) true/false if file was deleted
-    */
+     * delete
+     *
+     * @param  $document \Filebase\Document object
+     *
+     * @throws Exception
+     * @return (bool) true/false if file was deleted
+     */
     public function delete(Document $document)
     {
-        if ($this->config->read_only === true)
-        {
+        if ($this->config->read_only === true) {
             throw new Exception("This database is set to be read-only. No modifications can be made.");
         }
 
         $format = $this->config->format;
 
-        $d = Filesystem::delete($this->config->dir.'/'.Filesystem::validateName($document->getId(), $this->config->safe_filename).'.'.$format::getFileExtension());
+        $d = Filesystem::delete(
+            $this->config->dir . '/'
+            . Filesystem::validateName($document->getId(), $this->config->safe_filename)
+            . '.' . $format::getFileExtension()
+        );
 
         $this->flushCache();
 
@@ -364,12 +359,12 @@ class Database
     //--------------------------------------------------------------------
 
     /**
-    * truncate
-    *
-    * Alias for flush(true)
-    *
-    * @return @see flush
-    */
+     * truncate
+     *
+     * Alias for flush(true)
+     *
+     * @return @see flush
+     */
     public function truncate()
     {
         return $this->flush(true);
@@ -380,40 +375,32 @@ class Database
 
 
     /**
-    * flush
-    *
-    * This will DELETE all the documents within the database
-    *
-    * @param bool $confirm (confirmation before proceeding)
-    * @return void
-    */
+     * flush
+     *
+     * This will DELETE all the documents within the database
+     *
+     * @param  bool $confirm (confirmation before proceeding)
+     * @return void
+     */
     public function flush($confirm = false)
     {
-        if ($this->config->read_only === true)
-        {
+        if ($this->config->read_only === true) {
             throw new Exception("This database is set to be read-only. No modifications can be made.");
         }
 
-        if ($confirm===true)
-        {
+        if ($confirm===true) {
             $format = $this->config->format;
             $documents = $this->findAll(false);
-            foreach($documents as $document)
-            {
+            foreach ($documents as $document) {
                 Filesystem::delete($this->config->dir.'/'.$document.'.'.$format::getFileExtension());
             }
 
-            if ($this->count() === 0)
-            {
+            if ($this->count() === 0) {
                 return true;
-            }
-            else
-            {
+            } else {
                 throw new Exception("Could not delete all database files in ".$this->config->dir);
             }
-        }
-        else
-        {
+        } else {
             throw new Exception("Database Flush failed. You must send in TRUE to confirm action.");
         }
     }
@@ -423,14 +410,11 @@ class Database
 
 
     /**
-    * flushCache
-    *
-    *
-    */
+     * flushCache
+     */
     public function flushCache()
     {
-        if ($this->getConfig()->cache===true)
-        {
+        if ($this->getConfig()->cache===true) {
             $cache = new Cache($this);
             $cache->flush();
         }
@@ -441,14 +425,14 @@ class Database
 
 
     /**
-    * toArray
-    *
-    * @param \Filebase\Document
-    * @return array
-    */
+     * toArray
+     *
+     * @param  \Filebase\Document
+     * @return array
+     */
     public function toArray(Document $document)
     {
-        return $this->objectToArray( $document->getData() );
+        return $this->objectToArray($document->getData());
     }
 
 
@@ -456,19 +440,16 @@ class Database
 
 
     /**
-    * objectToArray
-    *
-    */
+     * objectToArray
+     */
     public function objectToArray($obj)
     {
-        if (!is_object($obj) && !is_array($obj))
-        {
+        if (!is_object($obj) && !is_array($obj)) {
             return $obj;
         }
 
         $arr = [];
-        foreach ($obj as $key => $value)
-        {
+        foreach ($obj as $key => $value) {
             $arr[$key] = $this->objectToArray($value);
         }
 
@@ -480,13 +461,12 @@ class Database
 
 
     /**
-    * getConfig
-    *
-    * @return $config
-    */
+     * getConfig
+     *
+     * @return $config
+     */
     public function getConfig()
     {
         return $this->config;
     }
-
 }

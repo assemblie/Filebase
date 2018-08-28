@@ -1,18 +1,15 @@
 <?php  namespace Filebase;
 
-
 class Filesystem
 {
 
     /**
-     * read
-     *
-     *
+     * @param $path
+     * @return bool|string
      */
     public static function read($path)
     {
-        if(!file_exists($path))
-        {
+        if (!file_exists($path)) {
             return false;
         }
 
@@ -31,8 +28,8 @@ class Filesystem
     /**
      * Writes data to the filesystem.
      *
-     * @param  string $path     The absolute file path to write to
-     * @param  string $contents The contents of the file to write
+     * @param string $path     The absolute file path to write to
+     * @param string $contents The contents of the file to write
      *
      * @return boolean          Returns true if write was successful, false if not.
      */
@@ -40,8 +37,7 @@ class Filesystem
     {
         $fp = fopen($path, 'w+');
 
-        if(!flock($fp, LOCK_EX))
-        {
+        if (!flock($fp, LOCK_EX)) {
             return false;
         }
 
@@ -77,25 +73,22 @@ class Filesystem
      * Validates the name of the file to ensure it can be stored in the
      * filesystem.
      *
-     * @param string $name The name to validate against
+     * @param string  $name          The name to validate against
      * @param boolean $safe_filename Allows filename to be converted if fails validation
      *
+     * @throws \Exception
      * @return bool Returns true if valid. Throws an exception if not.
      */
     public static function validateName($name, $safe_filename)
     {
-        if (!preg_match('/^[0-9A-Za-z\_\-]{1,63}$/', $name))
-        {
-            if ($safe_filename === true)
-            {
+        if (!preg_match('/^[0-9A-Za-z\_\-]{1,63}$/', $name)) {
+            if ($safe_filename === true) {
                 // rename the file
-                $name = preg_replace('/[^0-9A-Za-z\_\-]/','', $name);
+                $name = preg_replace('/[^0-9A-Za-z\_\-]/', '', $name);
 
                 // limit the file name size
-                $name = substr($name,0,63);
-            }
-            else
-            {
+                $name = substr($name, 0, 63);
+            } else {
                 throw new \Exception(sprintf('`%s` is not a valid file name.', $name));
             }
         }
@@ -112,13 +105,12 @@ class Filesystem
      *
      * @return array An array, item is a file
      */
-    public static function getAllFiles($path = '',$ext = 'json')
+    public static function getAllFiles($path = '', $ext = 'json')
     {
         $files = [];
         $_files = glob($path.'*.'.$ext);
-        foreach($_files as $file)
-        {
-            $files[] = str_replace('.'.$ext,'',basename($file));
+        foreach ($_files as $file) {
+            $files[] = str_replace('.'.$ext, '', basename($file));
         }
 
         return $files;
@@ -126,5 +118,4 @@ class Filesystem
 
 
     //--------------------------------------------------------------------
-
 }

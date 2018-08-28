@@ -1,6 +1,5 @@
 <?php  namespace Filebase;
 
-
 class Query extends QueryLogic
 {
 
@@ -12,9 +11,8 @@ class Query extends QueryLogic
 
 
     /**
-    * $documents
-    *
-    */
+     * $documents
+     */
     protected $documents = [];
 
 
@@ -22,20 +20,17 @@ class Query extends QueryLogic
 
 
     /**
-    * ->select()
-    *
-    * Set the selected fields you wish to return from each document
-    *
-    */
+     * ->select()
+     *
+     * Set the selected fields you wish to return from each document
+     */
     public function select($fields)
     {
-        if (is_string($fields))
-        {
-            $fields = explode(',',trim($fields));
+        if (is_string($fields)) {
+            $fields = explode(',', trim($fields));
         }
 
-        if (is_array($fields))
-        {
+        if (is_array($fields)) {
             $this->fields = $fields;
         }
 
@@ -44,9 +39,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->where()
-    *
-    */
+     * ->where()
+     */
     public function where(...$arg)
     {
         $this->addPredicate('and', $arg);
@@ -59,9 +53,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->andWhere()
-    *
-    */
+     * ->andWhere()
+     */
     public function andWhere(...$arg)
     {
         $this->addPredicate('and', $arg);
@@ -74,9 +67,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->orWhere()
-    *
-    */
+     * ->orWhere()
+     */
     public function orWhere(...$arg)
     {
         $this->addPredicate('or', $arg);
@@ -89,15 +81,13 @@ class Query extends QueryLogic
 
 
     /**
-    * ->limit()
-    *
-    */
+     * ->limit()
+     */
     public function limit($limit, $offset = 0)
     {
         $this->limit   = (int) $limit;
 
-        if ($this->limit === 0)
-        {
+        if ($this->limit === 0) {
             $this->limit = 9999999;
         }
 
@@ -111,9 +101,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->orderBy()
-    *
-    */
+     * ->orderBy()
+     */
     public function orderBy($field, $sort)
     {
         $this->orderBy = $field;
@@ -127,10 +116,9 @@ class Query extends QueryLogic
 
 
     /**
-    * addPredicate
-    *
-    */
-    protected function addPredicate($logic,$arg)
+     * addPredicate
+     */
+    protected function addPredicate($logic, $arg)
     {
         $this->predicate->add($logic, $arg);
     }
@@ -140,10 +128,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->getDocuments()
-    *
-    *
-    */
+     * ->getDocuments()
+     */
     public function getDocuments()
     {
         return $this->documents;
@@ -154,15 +140,13 @@ class Query extends QueryLogic
 
 
     /**
-    * ->results()
-    *
-    * @param bool $data_only - default:true (if true only return the documents data not the full object)
-    *
-    */
-    public function results( $data_only = true )
+     * ->results()
+     *
+     * @param bool $data_only - default:true (if true only return the documents data not the full object)
+     */
+    public function results($data_only = true)
     {
-        if ($data_only === true && empty($this->fields))
-        {
+        if ($data_only === true && empty($this->fields)) {
             return parent::run()->toArray();
         }
 
@@ -174,9 +158,8 @@ class Query extends QueryLogic
 
 
     /**
-    * ->resultDocuments()
-    *
-    */
+     * ->resultDocuments()
+     */
     public function resultDocuments()
     {
         return parent::run()->getDocuments();
@@ -187,15 +170,13 @@ class Query extends QueryLogic
 
 
     /**
-    * ->first()
-    *
-    * @param bool $data_only - default:true (if true only return the documents data not the full object)
-    *
-    */
-    public function first( $data_only = true )
+     * ->first()
+     *
+     * @param bool $data_only - default:true (if true only return the documents data not the full object)
+     */
+    public function first($data_only = true)
     {
-        if ($data_only === true && empty($this->fields))
-        {
+        if ($data_only === true && empty($this->fields)) {
             $results = parent::run()->toArray();
             return current($results);
         }
@@ -209,15 +190,13 @@ class Query extends QueryLogic
 
 
     /**
-    * ->last()
-    *
-    * @param bool $data_only - default:true (if true only return the documents data not the full object)
-    *
-    */
-    public function last( $data_only = true )
+     * ->last()
+     *
+     * @param bool $data_only - default:true (if true only return the documents data not the full object)
+     */
+    public function last($data_only = true)
     {
-        if ($data_only === true && empty($this->fields))
-        {
+        if ($data_only === true && empty($this->fields)) {
             $results = parent::run()->toArray();
             return end($results);
         }
@@ -230,11 +209,10 @@ class Query extends QueryLogic
 
 
     /**
-    * ->count()
-    *
-    * Count and return the number of documents in array
-    *
-    */
+     * ->count()
+     *
+     * Count and return the number of documents in array
+     */
     public function count()
     {
         $results = parent::run()->getDocuments();
@@ -247,19 +225,17 @@ class Query extends QueryLogic
 
 
     /**
-    * toArray
-    *
-    * @param \Filebase\Document
-    * @return array
-    */
+     * toArray
+     *
+     * @param  \Filebase\Document
+     * @return array
+     */
     public function toArray()
     {
         $docs = [];
 
-        if (!empty($this->documents))
-        {
-            foreach($this->documents as $document)
-            {
+        if (!empty($this->documents)) {
+            foreach ($this->documents as $document) {
                 $docs[] = (array) $document->getData();
             }
         }
@@ -269,5 +245,4 @@ class Query extends QueryLogic
 
 
     //--------------------------------------------------------------------
-
 }

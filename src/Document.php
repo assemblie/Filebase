@@ -1,16 +1,14 @@
 <?php  namespace Filebase;
 
-
 class Document
 {
+    private $database;
+    private $id;
 
-    private $__database;
-    private $__id;
+    private $created_at;
+    private $updated_at;
 
-    private $__created_at;
-    private $__updated_at;
-
-    private $__cache = false;
+    private $cache = false;
 
     private $data = [];
 
@@ -22,7 +20,7 @@ class Document
     */
     public function __construct($database)
     {
-        $this->__database = $database;
+        $this->database = $database;
     }
 
 
@@ -38,9 +36,10 @@ class Document
         $data = (object) [];
         $vars = get_object_vars($this);
 
-        foreach($vars as $k=>$v)
-        {
-            if (in_array($k,['__database','__id','__cache'])) continue;
+        foreach ($vars as $k => $v) {
+            if (in_array($k, ['__database','__id','__cache'])) {
+                continue;
+            }
             $data->{$k} = $v;
         }
 
@@ -63,7 +62,7 @@ class Document
     {
         Validate::valid($this);
 
-        return $this->__database->save($this, $data);
+        return $this->database->save($this, $data);
     }
 
 
@@ -79,7 +78,7 @@ class Document
     */
     public function delete()
     {
-        return $this->__database->delete($this);
+        return $this->database->delete($this);
     }
 
 
@@ -92,7 +91,7 @@ class Document
     */
     public function set($data)
     {
-        return $this->__database->set($this, $data);
+        return $this->database->set($this, $data);
     }
 
 
@@ -105,7 +104,7 @@ class Document
     */
     public function toArray()
     {
-        return $this->__database->toArray($this);
+        return $this->database->toArray($this);
     }
 
 
@@ -131,8 +130,7 @@ class Document
     */
     public function &__get($name)
     {
-        if (!array_key_exists($name, $this->data))
-        {
+        if (!array_key_exists($name, $this->data)) {
             $this->data[$name] = null;
         }
 
@@ -198,33 +196,25 @@ class Document
     {
         $items = $this->field($field);
 
-        if (is_callable($paramOne))
-        {
+        if (is_callable($paramOne)) {
             $function = $paramOne;
             $param = $paramTwo;
-        }
-        else
-        {
-            if (is_callable($paramTwo))
-            {
+        } else {
+            if (is_callable($paramTwo)) {
                 $function = $paramTwo;
                 $param = $paramOne;
             }
         }
 
-
-        if (!is_array($items) || empty($items))
-        {
+        if (!is_array($items) || empty($items)) {
             return [];
         }
 
         $r = [];
-        foreach($items as $index => $item)
-        {
+        foreach ($items as $index => $item) {
             $i = $function($item, $param);
 
-            if ($i!==false && !is_null($i))
-            {
+            if ($i !== false && !is_null($i)) {
                 $r[$index] = $i;
             }
         }
@@ -232,7 +222,6 @@ class Document
         $r = array_values($r);
 
         return $r;
-
     }
 
 
@@ -246,7 +235,7 @@ class Document
     */
     public function getDatabase()
     {
-        return $this->__database;
+        return $this->database;
     }
 
 
@@ -260,7 +249,7 @@ class Document
     */
     public function getId()
     {
-        return $this->__id;
+        return $this->id;
     }
 
 
@@ -288,7 +277,7 @@ class Document
     */
     public function setId($id)
     {
-        $this->__id = $id;
+        $this->id = $id;
 
         return $this;
     }
@@ -304,7 +293,7 @@ class Document
     */
     public function setFromCache($cache = true)
     {
-        $this->__cache = $cache;
+        $this->cache = $cache;
 
         return $this;
     }
@@ -319,7 +308,7 @@ class Document
     */
     public function isCache()
     {
-        return $this->__cache;
+        return $this->cache;
     }
 
 
@@ -337,17 +326,15 @@ class Document
     */
     public function createdAt($format = 'Y-m-d H:i:s')
     {
-        if (!$this->__created_at)
-        {
+        if (!$this->created_at) {
             return date($format);
         }
 
-        if ($format !== false)
-        {
-            return date($format, $this->__created_at);
+        if ($format !== false) {
+            return date($format, $this->created_at);
         }
 
-        return $this->__created_at;
+        return $this->created_at;
     }
 
 
@@ -364,17 +351,15 @@ class Document
     */
     public function updatedAt($format = 'Y-m-d H:i:s')
     {
-        if (!$this->__updated_at)
-        {
+        if (!$this->updated_at) {
             return date($format);
         }
 
-        if ($format !== false)
-        {
-            return date($format, $this->__updated_at);
+        if ($format !== false) {
+            return date($format, $this->updated_at);
         }
 
-        return $this->__updated_at;
+        return $this->updated_at;
     }
 
 
@@ -388,7 +373,7 @@ class Document
     */
     public function setCreatedAt($created_at)
     {
-        $this->__created_at = $created_at;
+        $this->created_at = $created_at;
 
         return $this;
     }
@@ -404,7 +389,7 @@ class Document
     */
     public function setUpdatedAt($updated_at)
     {
-        $this->__updated_at = $updated_at;
+        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -422,38 +407,30 @@ class Document
     * key_1.key_2.key_3 etc
     *
     * @param string $field
-    * @return string $context property
+    * @return string|array $context property
     */
     public function field($field)
     {
         $parts   = explode('.', $field);
         $context = $this->data;
 
-        if ($field=='data')
-        {
+        if ($field === 'data') {
             return $context;
         }
 
-        foreach($parts as $part)
-        {
-            if (trim($part) == '')
-            {
+        foreach ($parts as $part) {
+            if (trim($part) === '') {
                 return false;
             }
 
-            if (is_object($context))
-            {
-                if(!property_exists($context, $part))
-                {
+            if (is_object($context)) {
+                if (!property_exists($context, $part)) {
                     return false;
                 }
 
                 $context = $context->{$part};
-            }
-            else if (is_array($context))
-            {
-                if(!array_key_exists($part, $context))
-                {
+            } elseif (is_array($context)) {
+                if (!array_key_exists($part, $context)) {
                     return false;
                 }
 
@@ -463,5 +440,4 @@ class Document
 
         return $context;
     }
-
 }

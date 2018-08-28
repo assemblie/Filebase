@@ -1,24 +1,24 @@
 <?php  namespace Filebase;
 
-
 class DocumentTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-    * testSave()
-    *
-    * TEST CASE:
-    * - Save document with data
-    * - Get the document
-    * - Check that the data is there and the document exist
-    *
-    */
+     * testSave()
+     *
+     * TEST CASE:
+     * - Save document with data
+     * - Get the document
+     * - Check that the data is there and the document exist
+     */
     public function testSave()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir'   => __DIR__.'/databases',
             'cache' => false
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -41,32 +41,33 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
 
         /**
-        * testDoesNotExist()
-        *
-        * TEST CASE:
-        * - Save document with data
-        * - Get the document
-        * - Check that the data is there and the document exist
-        *
-        */
-        public function testDoesNotExist()
-        {
-            $db = new \Filebase\Database([
-                'dir'   => __DIR__.'/databases',
-                'cache' => false
-            ]);
+         * testDoesNotExist()
+         *
+         * TEST CASE:
+         * - Save document with data
+         * - Get the document
+         * - Check that the data is there and the document exist
+         */
+    public function testDoesNotExist()
+    {
+        $db = new \Filebase\Database(
+            [
+            'dir'   => __DIR__.'/databases',
+            'cache' => false
+                ]
+        );
 
-            $db->flush(true);
+        $db->flush(true);
 
-            // get saved data (put into array)
-            $doc = $db->get('doesexist')->save(['key'=>'value']);
+        // get saved data (put into array)
+        $doc = $db->get('doesexist')->save(['key'=>'value']);
 
-            $this->assertEquals(true, $db->has('doesexist'));
+        $this->assertEquals(true, $db->has('doesexist'));
 
-            $this->assertEquals(false, $db->has('doesnotexist'));
+        $this->assertEquals(false, $db->has('doesnotexist'));
 
-            $db->flush(true);
-        }
+        $db->flush(true);
+    }
 
 
         //--------------------------------------------------------------------
@@ -75,18 +76,19 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-    * testSetIdGetId()
-    *
-    * TEST CASE:
-    * - Set and Get Id
-    *
-    */
+     * testSetIdGetId()
+     *
+     * TEST CASE:
+     * - Set and Get Id
+     */
     public function testSetIdGetId()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir'   => __DIR__.'/databases/data_rename',
             'cache' => false
-        ]);
+            ]
+        );
 
         // save data
         $doc = $db->get('name_1')->save(['key'=>'value']);
@@ -107,19 +109,20 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-    * testSetValue()
-    *
-    * TEST CASE:
-    * - Using the set method, set the value in object ( DO NOT SAVE )
-    * - Check that the properties are in the object (matching)
-    *
-    */
+     * testSetValue()
+     *
+     * TEST CASE:
+     * - Using the set method, set the value in object ( DO NOT SAVE )
+     * - Check that the properties are in the object (matching)
+     */
     public function testSetValue()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'cache' => false
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -142,7 +145,6 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         $test3 = $db->get('test3');
 
         $this->assertEquals(null, $test3->key);
-
     }
 
 
@@ -150,19 +152,20 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-    * testIssetUnsetUnknown()
-    *
-    * TEST CASE:
-    * - Check if property isset
-    * - Unset property and see if it now returns null
-    *
-    */
+     * testIssetUnsetUnknown()
+     *
+     * TEST CASE:
+     * - Check if property isset
+     * - Unset property and see if it now returns null
+     */
     public function testIssetUnset()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'cache' => false
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -176,7 +179,6 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         unset($test->key);
 
         $this->assertEquals(null, ($test->key));
-
     }
 
 
@@ -185,9 +187,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testArraySetValueSave()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -203,9 +207,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testPropertySetValueSave()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -223,9 +229,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testToArray()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -241,9 +249,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testDelete()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -259,9 +269,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testGetId()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -277,9 +289,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testSetId()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -299,9 +313,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testDates()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -310,8 +326,8 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         $createdAt = strtotime($db->get('test')->createdAt());
         $updatedAt = strtotime($db->get('test')->updatedAt());
 
-        $this->assertEquals(date('Y-m-d'), date('Y-m-d',$createdAt));
-        $this->assertEquals(date('Y-m-d'), date('Y-m-d',$updatedAt));
+        $this->assertEquals(date('Y-m-d'), date('Y-m-d', $createdAt));
+        $this->assertEquals(date('Y-m-d'), date('Y-m-d', $updatedAt));
 
         $db->flush(true);
     }
@@ -319,9 +335,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testFormatDates()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -339,9 +357,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testNoFormatDates()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -350,8 +370,8 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         $createdAt = $db->get('test')->createdAt(false);
         $updatedAt = $db->get('test')->updatedAt(false);
 
-        $this->assertEquals(date('Y-m-d'), date('Y-m-d',$createdAt));
-        $this->assertEquals(date('Y-m-d'), date('Y-m-d',$updatedAt));
+        $this->assertEquals(date('Y-m-d'), date('Y-m-d', $createdAt));
+        $this->assertEquals(date('Y-m-d'), date('Y-m-d', $updatedAt));
 
         $db->flush(true);
     }
@@ -359,9 +379,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testMissingUpdatedDate()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -382,9 +404,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomFilter()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -401,9 +425,12 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
         $db->get('users')->set($u)->save();
 
-        $users = $db->get('users')->customFilter('data',function($item) {
-            return (($item['status']=='blocked') ? $item['email'] : false);
-        });
+        $users = $db->get('users')->customFilter(
+            'data',
+            function ($item) {
+                return (($item['status']=='blocked') ? $item['email'] : false);
+            }
+        );
 
         $this->assertEquals(1, count($users));
         $this->assertEquals('email@email.com', $users[0]);
@@ -414,9 +441,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomFilterParam()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -433,9 +462,13 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
         $db->get('users')->set($u)->save();
 
-        $users = $db->get('users')->customFilter('data','enabled',function($item, $status) {
-            return (($item['status']==$status) ? $item['email'] : false);
-        });
+        $users = $db->get('users')->customFilter(
+            'data',
+            'enabled',
+            function ($item, $status) {
+                return (($item['status']==$status) ? $item['email'] : false);
+            }
+        );
 
         $this->assertEquals(1, count($users));
         $this->assertEquals('notblocked@email.com', $users[0]);
@@ -447,9 +480,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomFilterParamIndex()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -468,9 +503,13 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
         $db->get('users_test_custom')->save($u);
 
-        $users = $db->get('users_test_custom')->filter('data','enabled',function($item, $status) {
-            return (($item['status']==$status) ? $item : false);
-        });
+        $users = $db->get('users_test_custom')->filter(
+            'data',
+            'enabled',
+            function ($item, $status) {
+                return (($item['status']==$status) ? $item : false);
+            }
+        );
 
 
         $this->assertEquals(1, count($users));
@@ -482,20 +521,25 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomFilterEmpty()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
         $db->get('customfilter_test')->set(['email'=>'time'])->save();
 
-        $users = $db->get('customfilter_test')->customFilter('email',function($item) {
-            return (($item['status']=='blocked') ? $item['email'] : false);
-        });
+        $users = $db->get('customfilter_test')->customFilter(
+            'email',
+            function ($item) {
+                return (($item['status']=='blocked') ? $item['email'] : false);
+            }
+        );
 
         // should be empty array
-        $this->assertEquals([],$users);
+        $this->assertEquals([], $users);
 
         $db->flush(true);
     }
@@ -503,9 +547,11 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testFieldMethod()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -521,17 +567,21 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
 
     public function testNestedFieldMethod()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases'
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
-        $db->get('user_test_email_2')->set([
+        $db->get('user_test_email_2')->set(
+            [
             'profile' => [
                 'email' => 'example@example.com'
             ]
-        ])->save();
+            ]
+        )->save();
 
         $f = $db->get('user_test_email_2')->field('profile.email');
 
@@ -545,10 +595,12 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'safe_filename' => false
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -572,8 +624,7 @@ class DocumentTest extends \PHPUnit\Framework\TestCase
         $badName = '1234567890123456789012345678901234567890123456789012345678901234';
         $newName = Filesystem::validateName($badName, true);
 
-        $this->assertEquals(63, (strlen($newName)) );
+        $this->assertEquals(63, (strlen($newName)));
         $this->assertEquals('123456789012345678901234567890123456789012345678901234567890123', $newName);
     }
-
 }

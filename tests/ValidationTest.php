@@ -1,12 +1,12 @@
 <?php  namespace Filebase;
 
-
 class ValidationTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testValidatingStringRequiredGood()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'name'   => [
@@ -14,7 +14,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
                     'valid.required' => true
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -30,7 +31,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'name'   => [
@@ -38,7 +40,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
                     'valid.required' => true
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -50,14 +53,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testOnlyRequiredGood()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'name'   => [
                     'valid.required' => true
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -73,14 +78,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'this_is_new'   => [
                     'valid.required' => true
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -95,7 +102,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testNestedString()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
@@ -106,7 +114,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
                     ]
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -130,7 +139,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
@@ -141,7 +151,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
                     ]
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -161,14 +172,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrayGood()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'array'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -191,14 +204,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'array'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -216,14 +231,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'int'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -239,14 +256,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testIntGood()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'int'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -265,14 +284,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testArrType()
     {
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'arr'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -293,14 +314,16 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
 
-        $db = new \Filebase\Database([
+        $db = new \Filebase\Database(
+            [
             'dir' => __DIR__.'/databases',
             'validate' => [
                 'profile'   => [
                     'valid.type' => 'unknown'
                 ]
             ]
-        ]);
+            ]
+        );
 
         $db->flush(true);
 
@@ -315,5 +338,4 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $db->flush(true);
     }
-
 }
